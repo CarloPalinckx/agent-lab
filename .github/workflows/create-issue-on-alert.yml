@@ -15,17 +15,37 @@ jobs:
         with:
           script: |
             const payload = context.payload.client_payload;
+            const body = [
+              `## Alert Summary`,
+              ``,
+              payload.condition_name,
+              ``,
+              `## Policy & Condition`,
+              ``,
+              `- **Policy:** ${payload.policy_name}`,
+              `- **Condition:** ${payload.condition_name}`,
+              ``,
+              `## Severity & Timing`,
+              ``,
+              `- **Severity:** ${payload.severity}`,
+              `- **Triggered at:** ${payload.timestamp}`,
+              ``,
+              `## Details`,
+              ``,
+              payload.details,
+              ``,
+              `## Triage Checklist`,
+              ``,
+              `- [ ] Acknowledge the alert`,
+              `- [ ] Check service health in New Relic`,
+              `- [ ] Identify root cause`,
+              `- [ ] Apply fix or escalate`,
+              `- [ ] Confirm alert has resolved`,
+            ].join('\n');
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `[Alert] ${payload.condition_name}`,
-              body: [
-                `**Policy:** ${payload.policy_name}`,
-                `**Severity:** ${payload.severity}`,
-                `**Triggered at:** ${payload.timestamp}`,
-                ``,
-                `**Details:**`,
-                payload.details,
-              ].join('\n'),
-              labels: ['alert', 'new-relic'],
+              body,
+              labels: ['Mission: Triage Alert'],
             });
