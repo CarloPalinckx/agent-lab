@@ -1,0 +1,43 @@
+services:
+  newrelic-infra:
+    image: newrelic/infrastructure:latest
+    cap_add:
+      - SYS_PTRACE
+    network_mode: host
+    pid: host
+    privileged: true
+    volumes:
+      - /:/host:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      NRIA_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NRIA_DISPLAY_NAME: ${NEW_RELIC_DISPLAY_NAME:-agent-lab}
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: agent-lab-api
+      NEW_RELIC_LOG_LEVEL: ${NEW_RELIC_LOG_LEVEL:-info}
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: agent-lab-web
+      NEW_RELIC_LOG_LEVEL: ${NEW_RELIC_LOG_LEVEL:-info}
+    depends_on:
+      - api
+    restart: unless-stopped
