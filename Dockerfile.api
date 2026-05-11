@@ -1,0 +1,34 @@
+FROM node:20-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+# Install dependencies
+FROM base AS deps
+WORKDIR /app
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY apps/api/package.json ./apps/api/
+COPY apps/web/package.json ./apps/web/
+COPY packages/ui/package.json ./packages/ui/
+RUN pnpm install --frozen-lockfile
+
+# Build
+FROM deps AS build
+COPY . .
+RUN pnpm --filter @repo/api build
+
+# Production image
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
+COPY --from=build /app/apps/api/dist ./apps/api/dist
+COPY apps/api/package.json ./apps/api/
+COPY apps/api/newrelic.js ./apps/api/
+COPY apps/api/data ./apps/api/data
+
+WORKDIR /app/apps/api
+EXPOSE 3001
+CMD ["node", "-r", "newrelic", "dist/main.js"]
