@@ -1,3 +1,24 @@
+## Green phase — 2026-05-11
+
+### Persona
+DevOps engineer — pure configuration changes to a GitHub Actions workflow and issue template, no application code.
+
+### Files changed
+- `.github/ISSUE_TEMPLATE/mission--triage-alert.md` — filled in frontmatter label and added all five body sections with a triage checklist
+- `.github/workflows/create-issue-on-alert.yml` — replaced ad-hoc body array with one matching the five template sections; changed labels to `['Mission: Triage Alert']`
+
+### Test run result
+```
+Results: 14 passed, 0 failed
+```
+
+### Notes
+- Created `Mission: Triage Alert` label in the repo (`#e11d48`) so the workflow doesn't fail on an unknown label
+- Old `alert` / `new-relic` labels removed from the workflow; `Mission: Triage Alert` is the single canonical label
+- Manual smoke test via `trigger-alert.sh` still requires a live NR environment — not automated
+
+---
+
 ## Red phase — 2026-05-11
 
 ### Tests written
