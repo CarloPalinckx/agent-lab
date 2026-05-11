@@ -1,3 +1,17 @@
+## Blue phase — 2026-05-11
+
+### Refactors made
+- Workflow `## Alert Summary` body changed from a bare `payload.condition_name` variable to a proper sentence: `The condition **X** fired on policy **Y**.` — gives the section distinct value from the Policy & Condition section below it
+
+### Memories written
+- `.agent/memory/github-actions-template-alignment.md` — workflow auto-created issues do not inherit template structure; section headings must be duplicated and a test script enforces alignment
+- `.agent/memory/github-labels-must-exist-before-workflow.md` — labels must be pre-created in the repo or `issues.create` silently drops them
+
+### PR
+https://github.com/CarloPalinckx/agent-lab/pull/6
+
+---
+
 ## Green phase — 2026-05-11
 
 ### Persona
