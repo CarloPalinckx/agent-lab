@@ -18,7 +18,7 @@ jobs:
             const body = [
               `## Alert Summary`,
               ``,
-              payload.condition_name,
+              `The condition **${payload.condition_name}** fired on policy **${payload.policy_name}**.`,
               ``,
               `## Policy & Condition`,
               ``,
