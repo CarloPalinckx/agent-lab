@@ -27,6 +27,7 @@ COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=build /app/apps/api/dist ./apps/api/dist
 COPY apps/api/package.json ./apps/api/
 COPY apps/api/newrelic.js ./apps/api/
+COPY apps/api/data ./apps/api/data
 
 WORKDIR /app/apps/api
 EXPOSE 3001
